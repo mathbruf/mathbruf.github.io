@@ -1,43 +1,42 @@
 # Migration Notes
 
-This project was refactored from a single-file HTML/CSS portfolio into a
-Vite + React + TypeScript + Tailwind app.
+This site has been refactored twice:
 
-The original file is preserved at [`legacy/index.html`](./legacy/index.html) for reference.
+1. **From** the original single-file HTML/CSS portfolio (`legacy/index.html`)
+   **to** a Vite + React + TypeScript + Tailwind app.
+2. **From** that first React iteration's "GitHub-dark + blue accent + rounded
+   cards" surface — which had collapsed into the AI-default Tailwind look —
+   **to** an explicit editorial-brutalist design system documented in
+   [`DESIGN_NOTES.md`](./DESIGN_NOTES.md).
 
-## What changed
+The original markup is preserved at [`legacy/index.html`](./legacy/index.html)
+as a content reference only. None of its visual decisions carry forward.
 
-- **Architecture**: monolithic HTML → modular React components.
-- **Styling**: hand-written CSS variables → Tailwind theme tokens. CSS variables
-  are still the source of truth for color values, exposed to Tailwind in
-  `tailwind.config.ts` via `rgb(var(--color-x) / <alpha-value>)`.
-- **Content**: hard-coded markup → typed data arrays in `src/data/`.
-- **Icons**: emoji (🎓, ✉️, 🐙, 💼) → Lucide React (`GraduationCap`, `Mail`,
-  `Github`, `Linkedin`).
-- **Animations**: none → Framer Motion (fade/slide on scroll, hover, stagger,
-  scroll progress bar) — all respect `prefers-reduced-motion`.
-- **New features**: theme toggle (dark/light), scroll-spy active nav, mobile
-  hamburger menu, copy-email button with toast, availability badge, animated
-  gradient mesh background, scroll progress bar at top of page.
-- **SEO/perf**: Open Graph + Twitter card meta tags, theme-color, sitemap,
-  robots.txt, lazy-loaded images, self-hosted fonts via `@fontsource-variable`.
+## Visual break from the original
 
-## Color palette mapping
+| Aspect          | Original / first React pass                  | Current                                                               |
+| --------------- | -------------------------------------------- | --------------------------------------------------------------------- |
+| Theme           | Dark `#0d1117` background                    | Paper `#f5f1ea` (warm cream). No dark mode.                           |
+| Accent          | GitHub blue `#58a6ff`                        | Vermillion `#e63946` — used sparingly                                 |
+| Display family  | Manrope / Fraunces / Space Grotesk           | Instrument Serif (display + body) / JetBrains Mono (labels)           |
+| Hero            | Centred name + two pill buttons              | Full-bleed serif name as art (`clamp(3.25rem, 16vw, 16rem)`)          |
+| Project layout  | Card grid with `translateY(-3px)` hover      | List of rows separated by hairline rules (no cards)                   |
+| Experience      | Vertical line + dot timeline                 | Two-column editorial spread (mono date | content)                     |
+| Section dividers| Plain border-top                             | Numbered rail signature + scrolling marquee strip between hero/work   |
+| Motion          | Ad-hoc fade-up at each component             | Three reusable primitives (`slideMask`, `drift`, `drawLine`)          |
+| Surfaces        | `bg-surface` + `border-border` rounded cards | Paper background + `border-ink/15` hairlines, no fills                |
+| Buttons         | Pill backgrounds                             | Underline-swap text links (mono micro)                                |
+| Theme toggle    | Yes (next-themes-style)                      | Removed — single-mode commitment                                      |
 
-CSS variables in the original → Tailwind tokens (`tailwind.config.ts`):
+## What is preserved
 
-| Original variable      | Hex       | Tailwind token              |
-| ---------------------- | --------- | --------------------------- |
-| `--bg`                 | `#0d1117` | `bg-bg`                     |
-| `--surface`            | `#161b22` | `bg-surface`                |
-| `--border`             | `#21262d` | `border-border`             |
-| `--accent`             | `#58a6ff` | `text-accent` / `bg-accent` |
-| `--accent-dim`         | `#1f6feb` | `text-accent-dim`           |
-| `--text`               | `#e6edf3` | `text-fg`                   |
-| `--muted`              | `#8b949e` | `text-muted`                |
-| `--tag`                | `#1c2b3a` | `bg-tag`                    |
-
-A light-theme variant is defined in `src/styles/globals.css` under `:root.light`.
+- Content (name, tagline, education, contact info — in `src/data/*.ts`).
+- Stack (Vite, React 18, TS, Tailwind, Framer Motion, Lucide).
+- File-tree shape under `src/components/{layout,sections,ui}/` (with
+  `motion/` added).
+- Accessibility commitments (focus rings, semantic landmarks, reduced-motion
+  support).
+- The GitHub Actions deploy workflow.
 
 ## Adding content (cheat sheet)
 

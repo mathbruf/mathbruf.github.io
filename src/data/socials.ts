@@ -8,16 +8,19 @@ export const socials: Social[] = [
     label: 'Email',
     href: `mailto:${EMAIL}`,
     icon: Mail,
+    secondary: EMAIL,
     copy: EMAIL,
   },
   {
     label: 'GitHub',
     href: 'https://github.com/mathbruf',
     icon: Github,
+    secondary: '@mathbruf',
   },
   {
     label: 'LinkedIn',
     href: 'https://www.linkedin.com/in/mathias-bruflot-84b639240/',
     icon: Linkedin,
+    secondary: '/in/mathias-bruflot',
   },
 ];

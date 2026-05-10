@@ -28,6 +28,7 @@ export interface Social {
   label: string;
   href: string;
   icon: LucideIcon;
+  secondary: string;
   copy?: string;
 }
 

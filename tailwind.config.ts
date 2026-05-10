@@ -2,24 +2,17 @@ import type { Config } from 'tailwindcss';
 
 export default {
   content: ['./index.html', './src/**/*.{ts,tsx}'],
-  darkMode: 'class',
   theme: {
     extend: {
       colors: {
-        bg: 'rgb(var(--color-bg) / <alpha-value>)',
-        surface: 'rgb(var(--color-surface) / <alpha-value>)',
-        border: 'rgb(var(--color-border) / <alpha-value>)',
-        accent: {
-          DEFAULT: 'rgb(var(--color-accent) / <alpha-value>)',
-          dim: 'rgb(var(--color-accent-dim) / <alpha-value>)',
-        },
-        fg: 'rgb(var(--color-fg) / <alpha-value>)',
-        muted: 'rgb(var(--color-muted) / <alpha-value>)',
-        tag: 'rgb(var(--color-tag) / <alpha-value>)',
+        paper: 'rgb(var(--paper) / <alpha-value>)',
+        ink: 'rgb(var(--ink) / <alpha-value>)',
+        'ink-soft': 'rgb(var(--ink-soft) / <alpha-value>)',
+        rule: 'rgb(var(--ink) / <alpha-value>)',
+        vermillion: 'rgb(var(--vermillion) / <alpha-value>)',
       },
       fontFamily: {
-        sans: ['"Manrope Variable"', 'system-ui', 'sans-serif'],
-        display: ['"Fraunces Variable"', 'Georgia', 'serif'],
+        serif: ['"Instrument Serif"', 'Georgia', 'serif'],
         mono: [
           '"JetBrains Mono Variable"',
           'ui-monospace',
@@ -27,16 +20,43 @@ export default {
           'monospace',
         ],
       },
-      letterSpacing: {
-        tightest: '-0.04em',
+      fontSize: {
+        'display-1': [
+          'clamp(3rem, 8vw, 7rem)',
+          { lineHeight: '0.95', letterSpacing: '-0.04em' },
+        ],
+        'display-2': [
+          'clamp(2rem, 4vw, 3.5rem)',
+          { lineHeight: '1', letterSpacing: '-0.03em' },
+        ],
+        'display-3': [
+          'clamp(1.375rem, 2.5vw, 1.875rem)',
+          { lineHeight: '1.05', letterSpacing: '-0.02em' },
+        ],
+        micro: [
+          '11px',
+          { lineHeight: '1.2', letterSpacing: '0.18em' },
+        ],
+        'mono-sm': [
+          '12px',
+          { lineHeight: '1.4', letterSpacing: '0.04em' },
+        ],
+      },
+      maxWidth: {
+        measure: '60ch',
+        wide: '88rem',
+      },
+      transitionTimingFunction: {
+        out: 'cubic-bezier(0.16, 1, 0.3, 1)',
+        brut: 'cubic-bezier(0.65, 0, 0.35, 1)',
       },
       animation: {
-        'gradient-mesh': 'gradient-mesh 24s ease infinite',
+        marquee: 'marquee 60s linear infinite',
       },
       keyframes: {
-        'gradient-mesh': {
-          '0%, 100%': { backgroundPosition: '0% 50%' },
-          '50%': { backgroundPosition: '100% 50%' },
+        marquee: {
+          '0%': { transform: 'translateX(0)' },
+          '100%': { transform: 'translateX(-50%)' },
         },
       },
     },

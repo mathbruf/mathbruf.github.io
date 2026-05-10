@@ -1,32 +1,50 @@
 import { motion } from 'framer-motion';
+import { drift, drawLine, stagger } from '@/lib/motion';
 
 interface Props {
-  index?: string;
+  index: string;
   label: string;
   title: string;
+  caption?: string;
 }
 
-export function SectionHeading({ index, label, title }: Props) {
+export function SectionHeading({ index, label, title, caption }: Props) {
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 12 }}
-      whileInView={{ opacity: 1, y: 0 }}
+    <motion.header
+      variants={stagger}
+      initial="hidden"
+      whileInView="show"
       viewport={{ once: true, margin: '-80px' }}
-      transition={{ duration: 0.5 }}
-      className="mb-12"
+      className="mb-16 md:mb-24 max-w-wide"
     >
-      <div className="flex items-center gap-3 mb-4 font-mono text-[11px] tracking-[0.18em] uppercase text-muted">
-        {index && (
-          <>
-            <span className="text-accent">{index}</span>
-            <span aria-hidden className="h-px w-8 bg-border" />
-          </>
-        )}
-        <span>{label}</span>
-      </div>
-      <h2 className="font-display text-4xl md:text-5xl font-medium tracking-tightest text-fg">
+      <motion.div
+        variants={drift}
+        className="flex items-baseline gap-4 font-mono text-micro mb-8"
+      >
+        <span className="text-vermillion">{index}</span>
+        <motion.span
+          variants={drawLine}
+          aria-hidden
+          className="h-px w-12 bg-ink origin-left"
+        />
+        <span className="text-ink uppercase">{label}</span>
+      </motion.div>
+
+      <motion.h2
+        variants={drift}
+        className="font-serif text-display-2 text-ink"
+      >
         {title}
-      </h2>
-    </motion.div>
+      </motion.h2>
+
+      {caption && (
+        <motion.p
+          variants={drift}
+          className="font-serif italic text-display-3 text-ink-soft mt-4 max-w-measure"
+        >
+          {caption}
+        </motion.p>
+      )}
+    </motion.header>
   );
 }

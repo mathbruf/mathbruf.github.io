@@ -1,35 +1,46 @@
+import { motion } from 'framer-motion';
 import { SectionHeading } from '@/components/ui/SectionHeading';
 import { TimelineItem } from '@/components/ui/TimelineItem';
 import { experience } from '@/data/experience';
+import { stagger } from '@/lib/motion';
 
 export function Experience() {
   return (
     <section
       id="experience"
-      className="max-w-5xl mx-auto px-6 md:px-12 py-24 md:py-32 border-t border-border scroll-mt-20"
+      className="px-6 md:px-12 lg:px-20 py-24 md:py-32 max-w-wide mx-auto scroll-mt-20"
     >
-      <SectionHeading index="02" label="Background" title="Experience" />
+      <SectionHeading
+        index="02"
+        label="Background"
+        title="Experience."
+      />
 
       {experience.length === 0 ? (
-        <div className="border border-dashed border-border/60 rounded-sm p-12 text-center">
-          <p className="font-mono text-[11px] tracking-[0.18em] uppercase text-muted mb-2">
-            Status: in progress
+        <div className="border-y border-ink/15 py-16 md:py-24 text-center">
+          <p className="font-mono text-micro text-ink/50 mb-3">
+            STATUS — IN PROGRESS
           </p>
-          <p className="font-display text-xl text-fg/80">
+          <p className="font-serif italic text-display-3 text-ink-soft">
             Work history coming soon.
           </p>
         </div>
       ) : (
-        <div className="flex flex-col gap-10">
+        <motion.div
+          variants={stagger}
+          initial="hidden"
+          whileInView="show"
+          viewport={{ once: true, margin: '-80px' }}
+          className="border-t border-ink/15"
+        >
           {experience.map((item, i) => (
             <TimelineItem
               key={`${item.title}-${item.period}`}
               item={item}
-              index={i}
               isLast={i === experience.length - 1}
             />
           ))}
-        </div>
+        </motion.div>
       )}
     </section>
   );

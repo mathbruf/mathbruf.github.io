@@ -1,46 +1,48 @@
 import { motion } from 'framer-motion';
 import type { ExperienceItem } from '@/types';
+import { drift } from '@/lib/motion';
+import { cn } from '@/lib/cn';
 
 interface Props {
   item: ExperienceItem;
-  index: number;
   isLast: boolean;
 }
 
-export function TimelineItem({ item, index, isLast }: Props) {
+export function TimelineItem({ item, isLast }: Props) {
   return (
     <motion.div
-      initial={{ opacity: 0, y: 12 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: '-60px' }}
-      transition={{ duration: 0.5, delay: index * 0.08 }}
-      className={`grid grid-cols-1 md:grid-cols-[180px_1fr] gap-4 md:gap-12 ${
-        isLast ? '' : 'pb-10 border-b border-border/60'
-      }`}
+      variants={drift}
+      className={cn(
+        'grid grid-cols-12 gap-y-3 gap-x-6 md:gap-x-8 items-baseline py-8 md:py-12',
+        !isLast && 'border-b border-ink/15',
+      )}
     >
-      <div className="font-mono text-[11px] tracking-[0.16em] uppercase text-muted md:pt-2">
+      <div className="col-span-12 md:col-span-3 font-mono text-mono-sm text-ink/50 uppercase">
         {item.period}
       </div>
 
-      <div>
-        <h3 className="font-display text-2xl font-medium tracking-tight mb-1 leading-tight">
+      <div className="col-span-12 md:col-span-5">
+        <h3 className="font-serif text-display-3 text-ink leading-[1.05]">
           {item.title}
         </h3>
-        <p className="text-sm text-accent mb-3 font-medium">
+        <p className="font-mono text-mono-sm text-vermillion mt-2 uppercase">
           {item.url ? (
             <a
               href={item.url}
               target="_blank"
               rel="noopener noreferrer"
-              className="hover:underline underline-offset-4"
+              className="hover:text-ink transition-colors"
             >
-              {item.company}
+              {item.company} ↗
             </a>
           ) : (
             item.company
           )}
         </p>
-        <p className="text-sm text-muted leading-relaxed max-w-prose">
+      </div>
+
+      <div className="col-span-12 md:col-span-4">
+        <p className="text-ink/70 leading-snug max-w-measure">
           {item.description}
         </p>
       </div>

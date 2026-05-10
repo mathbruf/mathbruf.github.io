@@ -1,42 +1,51 @@
 import { motion } from 'framer-motion';
 import { SectionHeading } from '@/components/ui/SectionHeading';
 import { education } from '@/data/education';
+import { drift, stagger } from '@/lib/motion';
+import { cn } from '@/lib/cn';
 
 export function Education() {
   return (
     <section
       id="education"
-      className="max-w-5xl mx-auto px-6 md:px-12 py-24 md:py-32 border-t border-border scroll-mt-20"
+      className="px-6 md:px-12 lg:px-20 py-24 md:py-32 max-w-wide mx-auto scroll-mt-20"
     >
-      <SectionHeading index="03" label="Studies" title="Education" />
+      <SectionHeading index="03" label="Studies" title="Education." />
 
-      <div className="flex flex-col gap-10">
+      <motion.div
+        variants={stagger}
+        initial="hidden"
+        whileInView="show"
+        viewport={{ once: true, margin: '-80px' }}
+        className="border-t border-ink/15"
+      >
         {education.map((edu, i) => (
           <motion.div
             key={edu.degree}
-            initial={{ opacity: 0, y: 12 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: '-60px' }}
-            transition={{ duration: 0.5, delay: i * 0.06 }}
-            className="grid grid-cols-1 md:grid-cols-[180px_1fr] gap-4 md:gap-12"
+            variants={drift}
+            className={cn(
+              'grid grid-cols-12 gap-y-4 gap-x-6 md:gap-x-8 items-start py-10 md:py-16',
+              i !== education.length - 1 && 'border-b border-ink/15',
+            )}
           >
-            <div className="font-mono text-[11px] tracking-[0.16em] uppercase text-muted md:pt-2">
-              {edu.period ?? 'Ongoing'}
+            <div className="col-span-12 md:col-span-3 font-mono text-micro text-ink/50 md:pt-3">
+              {edu.period ?? '— ONGOING —'}
             </div>
-            <div>
-              <h3 className="font-display text-2xl md:text-3xl font-medium tracking-tight mb-2 leading-tight">
+
+            <div className="col-span-12 md:col-span-9">
+              <h3 className="font-serif text-display-2 text-ink max-w-[20ch]">
                 {edu.degree}
               </h3>
-              <p className="text-sm text-accent mb-3 font-medium">
-                {edu.school}
+              <p className="font-mono text-micro text-vermillion mt-5 uppercase">
+                ↳ {edu.school}
               </p>
-              <p className="text-sm text-muted leading-relaxed max-w-prose">
+              <p className="text-ink/70 mt-5 max-w-measure leading-relaxed">
                 {edu.description}
               </p>
             </div>
           </motion.div>
         ))}
-      </div>
+      </motion.div>
     </section>
   );
 }

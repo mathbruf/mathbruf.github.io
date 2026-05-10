@@ -11,15 +11,15 @@ export function Toast({ show, message }: Props) {
     <AnimatePresence>
       {show && (
         <motion.div
-          initial={{ opacity: 0, y: 12 }}
+          initial={{ opacity: 0, y: 8 }}
           animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: 12 }}
-          transition={{ duration: 0.2 }}
+          exit={{ opacity: 0, y: 8 }}
+          transition={{ duration: 0.18 }}
           role="status"
           aria-live="polite"
-          className="fixed bottom-6 left-1/2 -translate-x-1/2 z-[150] flex items-center gap-2 px-4 py-2 bg-surface border border-border rounded-lg shadow-lg text-sm"
+          className="fixed bottom-6 left-1/2 -translate-x-1/2 z-[150] flex items-center gap-2 px-4 py-2.5 bg-ink text-paper font-mono text-micro"
         >
-          <Check size={16} className="text-emerald-400" aria-hidden />
+          <Check size={13} className="text-vermillion" aria-hidden />
           <span>{message}</span>
         </motion.div>
       )}

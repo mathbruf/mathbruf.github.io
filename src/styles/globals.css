@@ -4,45 +4,34 @@
 
 @layer base {
   :root {
-    --color-bg: 11 14 20;
-    --color-surface: 18 22 30;
-    --color-border: 30 36 46;
-    --color-accent: 88 166 255;
-    --color-accent-dim: 31 111 235;
-    --color-fg: 230 237 243;
-    --color-muted: 139 148 158;
-    --color-tag: 28 43 58;
-  }
-
-  :root.light {
-    --color-bg: 250 249 246;
-    --color-surface: 244 242 237;
-    --color-border: 220 216 207;
-    --color-accent: 25 96 200;
-    --color-accent-dim: 16 70 156;
-    --color-fg: 28 32 40;
-    --color-muted: 100 104 112;
-    --color-tag: 232 234 240;
+    --paper: 245 241 234;
+    --ink: 14 14 14;
+    --ink-soft: 80 78 74;
+    --vermillion: 230 57 70;
   }
 
   html {
+    background: rgb(var(--paper));
+    color: rgb(var(--ink));
+    font-family: theme('fontFamily.serif');
     scroll-behavior: smooth;
-    font-feature-settings: 'ss01', 'ss02', 'cv11';
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
   }
 
   body {
-    @apply bg-bg text-fg font-sans antialiased;
-    line-height: 1.65;
-    text-rendering: optimizeLegibility;
-    -webkit-font-smoothing: antialiased;
+    line-height: 1.55;
+    font-size: 1.0625rem;
   }
 
   ::selection {
-    @apply bg-accent/30 text-fg;
+    background: rgb(var(--vermillion) / 0.35);
+    color: rgb(var(--ink));
   }
 
   *:focus-visible {
-    @apply outline-none ring-2 ring-accent ring-offset-2 ring-offset-bg rounded;
+    outline: 2px solid rgb(var(--vermillion));
+    outline-offset: 4px;
   }
 
   @media (prefers-reduced-motion: reduce) {
@@ -54,37 +43,5 @@
       transition-duration: 0.01ms !important;
       scroll-behavior: auto !important;
     }
-  }
-}
-
-@layer utilities {
-  .font-display {
-    font-feature-settings: 'ss01', 'ss02';
-    font-variation-settings: 'opsz' 144, 'SOFT' 30, 'WONK' 0;
-  }
-
-  .font-display-italic {
-    font-feature-settings: 'ss01', 'ss02';
-    font-variation-settings: 'opsz' 144, 'SOFT' 50, 'WONK' 1;
-    font-style: italic;
-  }
-
-  .dot-grid {
-    background-image: radial-gradient(
-      circle at 1px 1px,
-      rgb(var(--color-fg) / 0.18) 1px,
-      transparent 0
-    );
-    background-size: 28px 28px;
-  }
-
-  .hairline-divider {
-    background-image: linear-gradient(
-      to right,
-      transparent,
-      rgb(var(--color-border)) 20%,
-      rgb(var(--color-border)) 80%,
-      transparent
-    );
   }
 }

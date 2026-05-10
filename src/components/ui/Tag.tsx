@@ -4,7 +4,7 @@ interface Props {
 
 export function Tag({ children }: Props) {
   return (
-    <span className="font-mono text-[11px] tracking-tight lowercase text-muted">
+    <span className="font-mono text-mono-sm lowercase text-ink/60">
       {children}
     </span>
   );

@@ -1,85 +1,69 @@
 import { motion } from 'framer-motion';
-import { ArrowUpRight, Github } from 'lucide-react';
+import { ArrowUpRight } from 'lucide-react';
 import type { Project } from '@/types';
-import { Tag } from './Tag';
+import { drift } from '@/lib/motion';
+import { cn } from '@/lib/cn';
 
 interface Props {
   project: Project;
   index: number;
+  isLast: boolean;
 }
 
-export function ProjectCard({ project, index }: Props) {
-  return (
-    <motion.article
-      initial={{ opacity: 0, y: 16 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: '-60px' }}
-      transition={{ duration: 0.5, delay: index * 0.06 }}
-      className="group relative bg-surface/40 border border-border rounded-sm p-6 transition-colors hover:border-fg/40"
-    >
-      <span
-        aria-hidden
-        className="absolute left-0 top-0 h-px w-0 bg-accent transition-all duration-500 group-hover:w-full"
-      />
+export function ProjectCard({ project, index, isLast }: Props) {
+  const href = project.demo ?? project.github;
+  const Tag = href ? 'a' : 'div';
+  const linkProps = href
+    ? { href, target: '_blank' as const, rel: 'noopener noreferrer' }
+    : {};
 
-      <div className="flex items-baseline justify-between mb-5">
-        <span className="font-mono text-[11px] tracking-[0.18em] uppercase text-accent">
-          {String(index + 1).padStart(2, '0')}
-        </span>
-        <div className="flex gap-3 text-muted">
-          {project.github && (
-            <a
-              href={project.github}
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label={`${project.title} on GitHub`}
-              className="hover:text-fg transition-colors"
-            >
-              <Github size={15} />
-            </a>
-          )}
-          {project.demo && (
-            <a
-              href={project.demo}
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label={`${project.title} live demo`}
-              className="hover:text-fg transition-colors"
-            >
-              <ArrowUpRight size={15} />
-            </a>
+  return (
+    <motion.div
+      variants={drift}
+      className={cn(!isLast && 'border-b border-ink/15')}
+    >
+      <Tag
+        {...linkProps}
+        className="group block py-8 md:py-12 transition-colors"
+      >
+        <div className="grid grid-cols-12 gap-y-3 gap-x-6 md:gap-x-8 items-baseline">
+          <div className="col-span-2 md:col-span-1 font-mono text-mono-sm text-ink/40">
+            {String(index + 1).padStart(2, '0')}
+          </div>
+
+          <div className="col-span-10 md:col-span-5">
+            <h3 className="font-serif text-display-3 text-ink transition-colors duration-300 group-hover:text-vermillion">
+              {project.title}
+            </h3>
+          </div>
+
+          <div className="col-span-12 md:col-span-4">
+            <p className="text-ink/70 leading-snug max-w-measure">
+              {project.description}
+            </p>
+          </div>
+
+          <div className="col-span-10 md:col-span-2 md:text-right">
+            <div className="flex flex-wrap md:justify-end items-baseline gap-x-2 gap-y-1 font-mono text-mono-sm text-ink/50">
+              {project.tags.map((tag, i) => (
+                <span key={tag} className="inline-flex items-baseline gap-2">
+                  {i > 0 && <span className="text-ink/30">·</span>}
+                  <span className="lowercase">{tag}</span>
+                </span>
+              ))}
+            </div>
+          </div>
+
+          {href && (
+            <div className="col-span-2 md:hidden flex justify-end items-baseline">
+              <ArrowUpRight
+                size={16}
+                className="text-ink/40 group-hover:text-vermillion group-hover:-translate-y-0.5 group-hover:translate-x-0.5 transition-all"
+              />
+            </div>
           )}
         </div>
-      </div>
-
-      {project.thumbnail && (
-        <img
-          src={project.thumbnail}
-          alt=""
-          loading="lazy"
-          className="w-full h-40 object-cover rounded-sm mb-5 grayscale group-hover:grayscale-0 transition-all duration-500"
-        />
-      )}
-
-      <h3 className="font-display text-2xl font-medium tracking-tight mb-3 leading-tight">
-        {project.title}
-      </h3>
-      <p className="text-sm text-muted mb-6 leading-relaxed">
-        {project.description}
-      </p>
-
-      <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
-        {project.tags.map((tag, i) => (
-          <span key={tag} className="flex items-center gap-2">
-            {i > 0 && (
-              <span aria-hidden className="text-muted/40">
-                ·
-              </span>
-            )}
-            <Tag>{tag}</Tag>
-          </span>
-        ))}
-      </div>
-    </motion.article>
+      </Tag>
+    </motion.div>
   );
 }

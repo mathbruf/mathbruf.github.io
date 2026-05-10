@@ -1,108 +1,105 @@
 import { motion } from 'framer-motion';
-import { ArrowUpRight } from 'lucide-react';
-import { Button } from '@/components/ui/Button';
-import { AvailabilityBadge } from '@/components/ui/AvailabilityBadge';
-
-const container = {
-  hidden: {},
-  show: { transition: { staggerChildren: 0.09, delayChildren: 0.1 } },
-};
-
-const item = {
-  hidden: { opacity: 0, y: 18 },
-  show: {
-    opacity: 1,
-    y: 0,
-    transition: { duration: 0.7, ease: [0.16, 1, 0.3, 1] },
-  },
-};
+import { ArrowDown, ArrowUpRight } from 'lucide-react';
+import { RevealText } from '@/components/motion/RevealText';
+import { drift, fade, stagger } from '@/lib/motion';
 
 export function Hero() {
-  return (
-    <section className="relative min-h-[92vh] flex items-center overflow-hidden pt-24 pb-12">
-      <div
-        aria-hidden
-        className="absolute inset-0 -z-10 dot-grid opacity-40 [mask-image:radial-gradient(ellipse_at_center,black_30%,transparent_75%)]"
-      />
-      <div
-        aria-hidden
-        className="absolute -top-40 -right-40 h-[44rem] w-[44rem] -z-10 rounded-full opacity-50 blur-[120px] animate-gradient-mesh"
-        style={{
-          background:
-            'radial-gradient(closest-side, rgb(var(--color-accent) / 0.30), rgb(var(--color-accent-dim) / 0.10) 60%, transparent 80%)',
-          backgroundSize: '200% 200%',
-        }}
-      />
+  const year = new Date().getFullYear();
 
+  return (
+    <section
+      id="hero"
+      className="relative min-h-screen flex flex-col justify-end px-6 md:px-12 lg:px-20 pb-12 md:pb-16 pt-32"
+    >
       <motion.div
-        variants={container}
+        variants={stagger}
         initial="hidden"
         animate="show"
-        className="max-w-5xl w-full mx-auto px-6 md:px-12"
+        className="w-full max-w-wide mx-auto"
       >
         <motion.div
-          variants={item}
-          className="flex items-center gap-4 mb-10"
+          variants={fade}
+          className="grid grid-cols-12 gap-y-6 gap-x-6 md:gap-x-8 mb-12 md:mb-16"
         >
-          <span
-            aria-hidden
-            className="h-px w-10 bg-accent"
-          />
-          <span className="font-mono text-[11px] tracking-[0.22em] uppercase text-accent">
-            Portfolio &nbsp;/&nbsp; 2026
-          </span>
+          <div className="col-span-12 md:col-span-3 font-mono text-micro text-ink/60 space-y-1.5">
+            <div>↳ PORTFOLIO / {year}</div>
+            <div>↳ BERGEN, NORWAY</div>
+            <div>↳ N 60.39° / E 5.32°</div>
+          </div>
+
+          <div className="hidden md:block md:col-span-9">
+            <div className="flex items-center gap-3 font-mono text-micro text-ink">
+              <span className="relative flex h-1.5 w-1.5" aria-hidden>
+                <span className="absolute inline-flex h-full w-full bg-vermillion opacity-60 animate-ping" />
+                <span className="relative inline-flex h-1.5 w-1.5 bg-vermillion" />
+              </span>
+              AVAILABLE FOR INTERNSHIPS — 2026
+            </div>
+          </div>
         </motion.div>
 
-        <motion.h1
-          variants={item}
-          className="font-sans font-extrabold text-[clamp(3rem,9vw,7.5rem)] leading-[0.95] tracking-tightest text-fg mb-8"
-        >
-          Mathias
+        <h1 className="font-serif font-normal text-display-1 text-ink">
+          <RevealText delay={0.1}>Mathias</RevealText>
           <br />
-          Bruflot
-          <span className="text-accent">.</span>
-        </motion.h1>
+          <span className="inline-flex items-end">
+            <RevealText delay={0.25}>Bruflot</RevealText>
+            <motion.span
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 1.2, duration: 0.4 }}
+              className="text-vermillion"
+            >
+              .
+            </motion.span>
+          </span>
+        </h1>
 
         <motion.div
-          variants={item}
-          className="grid md:grid-cols-[auto_1fr] gap-6 md:gap-12 items-start mb-12 max-w-3xl"
+          variants={drift}
+          initial="hidden"
+          animate="show"
+          transition={{ delay: 1.1 }}
+          className="grid grid-cols-12 gap-y-8 gap-x-6 md:gap-x-8 mt-12 md:mt-16 items-end"
         >
-          <div className="font-mono text-[11px] tracking-[0.18em] uppercase text-muted whitespace-nowrap pt-1">
-            ↳ Bergen, NO
-          </div>
-          <p className="text-lg md:text-xl text-fg/85 leading-relaxed font-light max-w-xl">
-            Computer science student at the University of Bergen, building
-            software that solves real problems —{' '}
-            <span className="font-display-italic text-fg">
+          <p className="col-span-12 md:col-span-6 md:col-start-4 font-serif italic text-display-3 text-ink-soft leading-snug max-w-measure">
+            Computer science student building software that solves real
+            problems —{' '}
+            <span className="not-italic font-mono text-mono-sm uppercase tracking-wider align-middle text-ink">
               quietly, and well.
             </span>
           </p>
-        </motion.div>
 
-        <motion.div variants={item} className="flex flex-wrap items-center gap-4 mb-12">
-          <Button href="#projects" variant="primary">
-            View Projects
-            <ArrowUpRight
-              size={16}
-              aria-hidden
-              className="transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
-            />
-          </Button>
-          <Button href="#contact" variant="secondary">
-            Get in touch
-          </Button>
-        </motion.div>
-
-        <motion.div variants={item}>
-          <AvailabilityBadge />
+          <div className="col-span-12 md:col-span-3 md:col-start-10 flex flex-col items-start md:items-end gap-3">
+            <a
+              href="#projects"
+              className="group inline-flex items-center gap-2 font-mono text-micro text-ink hover:text-vermillion transition-colors"
+            >
+              SELECTED WORK
+              <ArrowDown
+                size={12}
+                className="transition-transform group-hover:translate-y-0.5"
+              />
+            </a>
+            <a
+              href="#contact"
+              className="group inline-flex items-center gap-2 font-mono text-micro text-ink hover:text-vermillion transition-colors"
+            >
+              GET IN TOUCH
+              <ArrowUpRight
+                size={12}
+                className="transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5"
+              />
+            </a>
+          </div>
         </motion.div>
       </motion.div>
 
       <div
         aria-hidden
-        className="absolute bottom-8 left-1/2 -translate-x-1/2 font-mono text-[10px] tracking-[0.3em] uppercase text-muted/60"
+        className="absolute top-0 left-3 lg:left-5 h-24 flex items-end font-mono text-[10px] tracking-[0.2em] text-ink/40 hidden md:flex"
+        style={{ writingMode: 'vertical-rl' }}
       >
-        Scroll ↓
+        ↑ INDEX
       </div>
     </section>
   );
