@@ -9,6 +9,11 @@ export default defineConfig({
       '@': path.resolve(__dirname, './src'),
     },
   },
+  server: {
+    host: '127.0.0.1',
+    port: 5173,
+    strictPort: false,
+  },
   build: {
     target: 'es2020',
     sourcemap: false,
