@@ -1,8 +1,17 @@
 import { useEffect, useState } from 'react';
 import { cn } from '@/lib/cn';
+import { useT, type Loc } from '@/lib/i18n';
+import { LanguageToggle } from '@/components/ui/LanguageToggle';
+
+const navLinks: { id: string; label: Loc }[] = [
+  { id: 'about', label: { en: 'About', no: 'Om' } },
+  { id: 'projects', label: { en: 'Work', no: 'Arbeid' } },
+  { id: 'contact', label: { en: 'Contact', no: 'Kontakt' } },
+];
 
 export function Navbar() {
   const [scrolled, setScrolled] = useState(false);
+  const t = useT();
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 24);
@@ -26,20 +35,30 @@ export function Navbar() {
       </a>
 
       <div className="hidden md:flex items-center gap-8 font-mono text-micro">
-        <a href="#projects" className="text-ink/60 hover:text-ink transition-colors">
-          WORK
-        </a>
-        <a href="#contact" className="text-ink/60 hover:text-ink transition-colors">
-          CONTACT
-        </a>
+        {navLinks.map((link) => (
+          <a
+            key={link.id}
+            href={`#${link.id}`}
+            className="text-ink/60 hover:text-ink transition-colors uppercase"
+          >
+            {t(link.label)}
+          </a>
+        ))}
+        <span aria-hidden className="text-ink/20">
+          |
+        </span>
+        <LanguageToggle />
       </div>
 
-      <a
-        href="#contact"
-        className="md:hidden font-mono text-micro text-ink hover:text-vermillion transition-colors"
-      >
-        ↗ CONTACT
-      </a>
+      <div className="md:hidden flex items-center gap-4">
+        <LanguageToggle />
+        <a
+          href="#contact"
+          className="font-mono text-micro text-ink hover:text-vermillion transition-colors"
+        >
+          ↗ {t({ en: 'CONTACT', no: 'KONTAKT' })}
+        </a>
+      </div>
     </nav>
   );
 }

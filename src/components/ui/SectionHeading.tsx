@@ -1,14 +1,16 @@
 import { motion } from 'framer-motion';
 import { drift, drawLine, stagger } from '@/lib/motion';
+import { useT, type Loc } from '@/lib/i18n';
 
 interface Props {
   index: string;
-  label: string;
-  title: string;
-  caption?: string;
+  label: Loc;
+  title: Loc;
+  caption?: Loc;
 }
 
 export function SectionHeading({ index, label, title, caption }: Props) {
+  const t = useT();
   return (
     <motion.header
       variants={stagger}
@@ -27,14 +29,11 @@ export function SectionHeading({ index, label, title, caption }: Props) {
           aria-hidden
           className="h-px w-12 bg-ink origin-left"
         />
-        <span className="text-ink uppercase">{label}</span>
+        <span className="text-ink uppercase">{t(label)}</span>
       </motion.div>
 
-      <motion.h2
-        variants={drift}
-        className="font-serif text-display-2 text-ink"
-      >
-        {title}
+      <motion.h2 variants={drift} className="font-serif text-display-2 text-ink">
+        {t(title)}
       </motion.h2>
 
       {caption && (
@@ -42,7 +41,7 @@ export function SectionHeading({ index, label, title, caption }: Props) {
           variants={drift}
           className="font-serif italic text-display-3 text-ink-soft mt-4 max-w-measure"
         >
-          {caption}
+          {t(caption)}
         </motion.p>
       )}
     </motion.header>

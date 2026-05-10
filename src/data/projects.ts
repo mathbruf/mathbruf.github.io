@@ -1,16 +1,14 @@
-import type { Project } from '@/types';
-
 /**
- * Add real projects here. The cards render in array order.
- * Optional fields (github, demo, thumbnail) are rendered conditionally.
+ * Projects are loaded live from GitHub via `src/lib/github.ts` at runtime.
+ *
+ * Use `featuredRepoNames` to pin specific repos at the top of the section
+ * (in the order listed). Any repos not in the featured list fill the
+ * remaining slots, sorted by `pushed_at` descending.
+ *
+ * Leave `featuredRepoNames` empty to show the most-recently-updated repos.
  */
-export const projects: Project[] = [
-  // {
-  //   title: 'Project Name',
-  //   description: 'What it does and why it matters.',
-  //   tags: ['TypeScript', 'React'],
-  //   github: 'https://github.com/mathbruf/repo',
-  //   demo: 'https://demo.example.com',
-  //   thumbnail: '/projects/repo.png',
-  // },
+export const GITHUB_USERNAME = 'mathbruf';
+
+export const featuredRepoNames: string[] = [
+  // 'repo-name',
 ];

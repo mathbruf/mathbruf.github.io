@@ -17,3 +17,7 @@ pnpm-debug.log*
 .env
 .env.local
 .env.*.local
+
+# Personal documents — keep out of the public repo
+*.pdf
+portrettbilde.*

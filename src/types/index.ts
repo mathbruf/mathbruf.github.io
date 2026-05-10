@@ -1,4 +1,5 @@
 import type { LucideIcon } from 'lucide-react';
+import type { Loc } from '@/lib/i18n';
 
 export interface Project {
   title: string;
@@ -10,26 +11,46 @@ export interface Project {
 }
 
 export interface ExperienceItem {
-  period: string;
-  title: string;
-  company: string;
-  description: string;
+  period: Loc;
+  title: Loc;
+  company: Loc;
+  location?: Loc;
+  description: Loc;
+  bullets?: Loc[];
   url?: string;
 }
 
 export interface EducationItem {
-  degree: string;
-  school: string;
-  description: string;
-  period?: string;
+  period?: Loc;
+  degree: Loc;
+  school: Loc;
+  description: Loc;
+  details?: Loc;
 }
 
 export interface Social {
-  label: string;
+  label: Loc;
   href: string;
   icon: LucideIcon;
   secondary: string;
   copy?: string;
 }
 
-export type SectionId = 'projects' | 'experience' | 'education' | 'contact';
+export type SectionId =
+  | 'hero'
+  | 'about'
+  | 'experience'
+  | 'education'
+  | 'projects'
+  | 'contact';
+
+export interface Repo {
+  name: string;
+  description: string | null;
+  url: string;
+  homepage: string | null;
+  language: string | null;
+  stars: number;
+  topics: string[];
+  pushedAt: string;
+}

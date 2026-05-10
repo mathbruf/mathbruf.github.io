@@ -5,7 +5,7 @@ export const EMAIL = 'mathbruf@hotmail.com';
 
 export const socials: Social[] = [
   {
-    label: 'Email',
+    label: { en: 'Email', no: 'E-post' },
     href: `mailto:${EMAIL}`,
     icon: Mail,
     secondary: EMAIL,

@@ -1,16 +1,19 @@
 import { useEffect, useState } from 'react';
 import { cn } from '@/lib/cn';
+import { useT, type Loc } from '@/lib/i18n';
 
-const sections = [
-  { id: 'hero', index: '00', label: 'Index' },
-  { id: 'projects', index: '01', label: 'Work' },
-  { id: 'experience', index: '02', label: 'Experience' },
-  { id: 'education', index: '03', label: 'Studies' },
-  { id: 'contact', index: '04', label: 'Contact' },
+const sections: { id: string; index: string; label: Loc }[] = [
+  { id: 'hero', index: '00', label: { en: 'Index', no: 'Indeks' } },
+  { id: 'about', index: '01', label: { en: 'About', no: 'Om' } },
+  { id: 'experience', index: '02', label: { en: 'Work', no: 'Arbeid' } },
+  { id: 'education', index: '03', label: { en: 'Studies', no: 'Studier' } },
+  { id: 'projects', index: '04', label: { en: 'Code', no: 'Kode' } },
+  { id: 'contact', index: '05', label: { en: 'Contact', no: 'Kontakt' } },
 ];
 
 export function SectionIndex() {
   const [activeId, setActiveId] = useState<string>('hero');
+  const t = useT();
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -34,7 +37,7 @@ export function SectionIndex() {
   return (
     <aside
       className="fixed top-0 bottom-0 left-3 lg:left-5 z-30 hidden md:flex flex-col justify-center pointer-events-none"
-      aria-hidden
+      aria-label={t({ en: 'Section index', no: 'Seksjonsindeks' })}
     >
       <ul className="flex flex-col gap-5 pointer-events-auto">
         {sections.map((s) => {
@@ -44,12 +47,14 @@ export function SectionIndex() {
               <a
                 href={`#${s.id}`}
                 className="group flex items-center gap-3"
-                aria-label={`${s.label} section`}
+                aria-label={`${t(s.label)}`}
               >
                 <span
                   className={cn(
                     'font-mono text-[10px] tracking-[0.2em] transition-colors duration-500',
-                    active ? 'text-vermillion' : 'text-ink/30 group-hover:text-ink',
+                    active
+                      ? 'text-vermillion'
+                      : 'text-ink/30 group-hover:text-ink',
                   )}
                 >
                   {s.index}

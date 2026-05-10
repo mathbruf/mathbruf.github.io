@@ -7,9 +7,10 @@ import {
 } from 'lucide-react';
 import { drift } from '@/lib/motion';
 import { cn } from '@/lib/cn';
+import { useT, type Loc } from '@/lib/i18n';
 
 interface Props {
-  label: string;
+  label: Loc;
   secondary: string;
   icon: LucideIcon;
   href?: string;
@@ -25,6 +26,7 @@ export function ContactLink({
   onClick,
   copied,
 }: Props) {
+  const t = useT();
   const isExternal = !!href && href.startsWith('http');
   const TrailingIcon = onClick ? (copied ? Check : Copy) : ArrowUpRight;
 
@@ -42,7 +44,9 @@ export function ContactLink({
           className="text-ink/40 transition-colors group-hover:text-vermillion"
         />
       </div>
-      <p className="font-mono text-micro text-ink uppercase mb-1.5">{label}</p>
+      <p className="font-mono text-micro text-ink uppercase mb-1.5">
+        {t(label)}
+      </p>
       <p
         className="font-mono text-mono-sm text-ink/60 truncate"
         title={secondary}

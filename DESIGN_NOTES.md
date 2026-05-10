@@ -132,6 +132,50 @@ expressive everywhere.
 
 ## Refinement notes
 
+### 2026-05-10 — Bilingual + portrait pass
+- **EN / NO language switch.** A small `LangProvider` (`src/lib/i18n.tsx`)
+  carries `lang: 'en' | 'no'`, persists to `localStorage` (`mb-lang`), and
+  defaults to the browser locale (`en-*` → English, otherwise Norwegian).
+  All translatable copy uses the `Loc = string | { en, no }` shape and is
+  rendered through `useT()`. The toggle (`EN / NO`) lives in the navbar on
+  desktop and mobile. The active language is also set on `<html lang="…">`
+  for accessibility.
+- **Portrait added.** A 272×272 JPG (`public/portrait.jpg`) sits in the
+  top-left corner of the hero composition at `w-20 / md:w-24` with a
+  `border-ink/20` hairline. It anchors the page without competing with the
+  big serif name.
+- **Marquee retired.** The italic-serif scrolling strip between hero and
+  about is gone. A simple full-width `h-px bg-ink/15` divider replaces it.
+  Cleaner page rhythm; quieter rhythm to match the rest of the design.
+- **All internship references removed** — the "AVAILABLE FOR INTERNSHIPS"
+  badge, the hero tagline's third sentence, and the contact-section caption
+  no longer mention internships. The contact caption now reads "Open to
+  collaborations, conversations, or anything about building software well."
+
+### 2026-05-10 — Content-population pass
+- **Page reordered.** New flow: Hero → About → Experience → Education →
+  Projects → Contact. The numbered rail now spans `00 — 05` (one extra
+  entry for the new About section).
+- **Hero subtitle replaced.** The "Computer science student building
+  software… quietly, and well." italic strapline is gone. In its place: a
+  three-sentence first-person intro drawn from the CV + cover letter,
+  ending on what Mathias is currently working toward (summer-2026
+  internship).
+- **About section added.** Three-paragraph bio (also first-person, drawn
+  from the CV + cover letter). Same two-column rhythm as Experience and
+  Education — mono `↳ BIO` label on the left, prose on the right.
+- **Education has an expandable details block.** The bachelor's row shows
+  a short description and a "Read more ↓" toggle that slides a longer
+  programme description down with a Framer Motion `height: auto` reveal.
+  Honours `prefers-reduced-motion` (instant toggle).
+- **Projects are live from GitHub.** No more static placeholder cards. A
+  new `src/lib/github.ts` fetches `/users/mathbruf/repos`, filters out
+  forks / archived / the profile-readme repo, sorts by `pushed_at`, and
+  caches in `sessionStorage` for 10 minutes. The section renders
+  skeletons during loading and a graceful error state if the API is
+  unreachable. `featuredRepoNames` in `src/data/projects.ts` allows
+  pinning specific repos at the top.
+
 ### 2026-05-10 — Tone-down pass
 - **Display caps reduced.** `display-1` capped at `7rem` (was `16rem`),
   `display-2` at `3.5rem` (was `6rem`). Hero now reads as composed rather

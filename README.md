@@ -38,28 +38,45 @@ Dev server: <http://localhost:5173>.
 ## Deploy
 
 `.github/workflows/deploy.yml` builds and publishes the site to GitHub Pages
-on every push to `main`. In the repo settings, set Pages → Source to
+on every push to `main`. In repo settings, set Pages → Source to
 "GitHub Actions".
 
 For Vercel, point the project at this repo — it auto-detects Vite. Build
 command: `npm run build`. Output directory: `dist/`.
 
-## Adding content
+## Content
 
-All copy lives in `src/data/`. To add a project:
+Where each piece of copy lives:
+
+| Piece                     | File                                                                |
+| ------------------------- | ------------------------------------------------------------------- |
+| Hero intro paragraph      | `src/components/sections/Hero.tsx` (inline)                         |
+| About bio                 | `src/components/sections/About.tsx` (inline)                        |
+| Experience entries        | `src/data/experience.ts`                                            |
+| Education entries         | `src/data/education.ts` (use `details` for the "Read more" block)   |
+| Projects (work)           | **Live from GitHub** — see below                                    |
+| Contact links             | `src/data/socials.ts`                                               |
+| Section title / labels    | Each section component, via the `<SectionHeading>` props            |
+| Footer colophon           | `src/components/layout/Footer.tsx` (inline)                         |
+| Marquee divider text      | `src/App.tsx` — `<Marquee text="…" />`                              |
+
+### Projects: live from GitHub
+
+The Projects section fetches `https://api.github.com/users/mathbruf/repos`
+on mount, filters out forks / archived repos / the profile-readme repo,
+sorts by recent push, and shows the top 6. To pin specific repos:
 
 ```ts
 // src/data/projects.ts
-{
-  title: 'My Project',
-  description: 'What it does and why it matters.',
-  tags: ['typescript', 'react'],
-  github: 'https://github.com/mathbruf/repo',
-  demo: 'https://demo.example.com',
-}
+export const featuredRepoNames: string[] = [
+  'my-headline-repo',
+];
 ```
 
-Same pattern for `experience.ts`, `education.ts`, `socials.ts`.
+The fetch is cached in `sessionStorage` for 10 minutes
+(`mb-github-repos`) to stay under the unauthenticated rate limit during
+development reloads. Change `GITHUB_USERNAME` in the same file to point
+the section at a different account.
 
 See [`CLAUDE.md`](./CLAUDE.md) for the full architectural spec and
 [`DESIGN_NOTES.md`](./DESIGN_NOTES.md) for the design language.

@@ -6,9 +6,16 @@ code in this repository.
 ## 1. Project Overview
 
 Personal portfolio for **Mathias Bruflot**, a computer science student at the
-University of Bergen. Single-page React app with five sections (hero,
-projects, experience, education, contact) and a deliberately opinionated
-visual identity. Deployed at <https://mathbruf.github.io>.
+University of Bergen. Single-page React app with six sections in order:
+
+1. **Hero** — full-bleed name as art + short personal intro
+2. **About** — longer bio drawn from CV + cover letter
+3. **Experience** — career history from CV
+4. **Education** — degrees, with an expandable details block on the bachelor's
+5. **Projects** — **live** from GitHub (`fetchPinnedRepos('mathbruf')`)
+6. **Contact** — three uniform `ContactLink` cards
+
+Deployed at <https://mathbruf.github.io>.
 
 ## 2. Tech Stack
 
@@ -33,15 +40,18 @@ progress indicator. No custom cursor.
 src/
 ├── components/
 │   ├── layout/        Navbar, Footer, SectionIndex
-│   ├── sections/      Hero, Projects, Experience, Education, Contact
+│   ├── sections/      Hero, About, Experience, Education, Projects, Contact
 │   ├── motion/        RevealText, Marquee
 │   └── ui/            Button, ContactLink, ProjectCard, TimelineItem,
 │                      SectionHeading, Tag, Toast
-├── data/              Typed content arrays (single source of truth for copy)
-├── hooks/             useScrollSpy, useCopyToClipboard, useReducedMotion
-├── lib/               cn (clsx+twMerge), motion (variants & easings)
+├── data/              projects (live config), experience, education, socials
+├── hooks/             useScrollSpy, useCopyToClipboard, useReducedMotion,
+│                      useGithubRepos
+├── lib/               cn (clsx+twMerge), motion (variants & easings),
+│                      github (fetchPinnedRepos with sessionStorage cache)
 ├── styles/globals.css Tailwind layers + CSS color tokens
-├── types/             Shared TypeScript types
+├── types/             Shared TypeScript types (Project, ExperienceItem,
+│                      EducationItem, Social, SectionId, Repo)
 ├── App.tsx            Composition root
 └── main.tsx           Entry — mounts <App /> and imports fonts/styles
 ```
@@ -91,29 +101,31 @@ not override with `leading-*` or `tracking-*` classes on display text.
 - `drawLine` — `scaleX 0→1` hairline draw.
 - `stagger`, `fade`, easings (`easings.out`, `easings.brut`).
 
-Reuse these. Do not inline new variants. Durations stay in the 300–500ms band
-(the masked text reveal goes ~900ms because of the larger distance).
+Reuse these. Do not inline new variants.
 
 ### Signature visual element
 
 A fixed numbered rail (`SectionIndex.tsx`) on the left edge of the viewport.
-Active section index + hairline turn vermillion as you scroll. The marquee
-strip between hero and projects is a secondary signature. Nothing else
-qualifies — no scroll-progress bar, no custom cursor, no decorative chrome.
+Active section index + hairline turn vermillion as you scroll. The rail now
+holds **6 entries** (`00 — 05`): Index, About, Work, Studies, Code, Contact.
+The marquee strip between hero and about is a secondary signature.
 
 ### Contact cards
 
 All three contact cards (Email, GitHub, LinkedIn) render through the shared
 `ContactLink` component in a `grid-cols-1 md:grid-cols-3 gap-4` grid. Width,
-height, padding, label size, and secondary-text size are identical across
-the three. The `Social` data type carries `secondary` (always-visible mono
-caption) and an optional `copy` (presence of which makes the card a
-copy-to-clipboard button instead of a link).
+height, padding, label size, and secondary-text size are identical. The
+`Social` data type carries `secondary` (always-visible mono caption) and an
+optional `copy` (presence makes the card a copy-to-clipboard button).
 
 ## 5. Architectural Conventions
 
-- **Content lives in `src/data/*.ts`** — typed against `src/types/`.
+- **Static content lives in `src/data/*.ts`** — typed against `src/types/`.
   Components must never hard-code copy, URLs, or lists.
+- **Projects are loaded live** at runtime from GitHub via
+  `src/lib/github.ts → fetchPinnedRepos`. The data file
+  `src/data/projects.ts` only exports `GITHUB_USERNAME` and an optional
+  `featuredRepoNames` curation list.
 - **Design tokens live in `tailwind.config.ts`** — never hard-code colors,
   font families, sizes, or easings inside components.
 - **Motion variants live in `src/lib/motion.ts`** — reuse, don't redefine.
@@ -128,32 +140,64 @@ copy-to-clipboard button instead of a link).
 
 ## 6. How to Add Content
 
-### Add a project
+### Add or update a job
+
+```ts
+// src/data/experience.ts — order most-recent first
+{
+  period: '2024 — Now',                 // em-dash; rendered uppercase mono
+  title: 'Software Engineer Intern',
+  company: 'Acme Inc.',
+  location: 'Oslo',                     // optional, appended after company
+  description: 'Built X serving Y users.',
+  bullets: [                            // optional 2–4 achievement bullets
+    'Shipped feature A used by N teams.',
+    'Reduced p95 latency by Z%.',
+  ],
+  url: 'https://acme.example.com',      // optional, makes company name a link
+}
+```
+
+### Add or update a degree
+
+```ts
+// src/data/education.ts — order most-recent first
+{
+  period: 'Aug 2024 — Present',
+  degree: "Bachelor's in Computer Engineering (Datateknologi)",
+  school: 'University of Bergen (UiB)',
+  description: 'Short, one-line description shown in the card.',
+  details:                              // optional — turns on "Read more"
+    'Longer programme description that slides down when expanded.',
+}
+```
+
+Setting `details` adds the expandable "Read more ↓" toggle on that row.
+
+### Curate (or pin) projects
+
+Projects come **live from GitHub** for `mathbruf`, filtered to exclude
+archived repos and the profile-readme repo. Forks are included since they
+often represent coursework / learning. Top 6 by `pushed_at` are shown.
+
+To pin specific repos at the top:
 
 ```ts
 // src/data/projects.ts
-{
-  title: 'Project Name',
-  description: 'What it does and why it matters.',
-  tags: ['typescript', 'postgres'],     // lowercase preferred — they render as mono
-  github: 'https://github.com/mathbruf/repo',
-  demo: 'https://demo.example.com',     // optional
-  thumbnail: '/projects/repo.png',      // optional, place in public/projects/
-},
+export const featuredRepoNames: string[] = [
+  'my-headline-repo',
+  'another-good-one',
+];
 ```
 
-### Add a job
+Pinned repos appear first in the listed order; remaining slots fill with
+the most recently updated repos. To change which GitHub user the section
+points at, edit `GITHUB_USERNAME` in the same file.
 
-```ts
-// src/data/experience.ts
-{
-  period: '2024 — Now',                 // em-dash; rendered as uppercase mono
-  title: 'Software Engineer Intern',
-  company: 'Acme Inc.',
-  description: 'Built X serving Y users.',
-  url: 'https://acme.example.com',      // optional
-},
-```
+The fetch is cached in `sessionStorage` for 10 minutes (`mb-github-repos`)
+to avoid hitting GitHub's unauthenticated rate limit during dev reloads.
+Clear it via `sessionStorage.removeItem('mb-github-repos')` if you need a
+fresh fetch.
 
 ### Add a social link
 
@@ -165,8 +209,8 @@ import { Twitter } from 'lucide-react';
   label: 'Twitter',
   href: 'https://x.com/handle',
   icon: Twitter,
-  secondary: '@handle',                 // shown under the label in the contact card
-},
+  secondary: '@handle',                 // mono caption shown under the label
+}
 ```
 
 ## 7. Commands
@@ -195,9 +239,9 @@ npm run format     # prettier (src/**)
 - Read `DESIGN_NOTES.md` before any visual change.
 - Extend motion primitives in `src/lib/motion.ts` rather than inlining.
 - Add new shared types to `src/types/`.
-- Treat `src/data/*.ts` as the source of truth for copy.
-- Keep all contact cards uniform — route every entry through the shared
-  `ContactLink` component. Do not introduce a second contact-card visual.
+- Treat `src/data/*.ts` as the source of truth for static copy. Treat the
+  GitHub API response as the source of truth for projects.
+- Keep all contact cards uniform — route every entry through `ContactLink`.
 - Update `CLAUDE.md` and `DESIGN_NOTES.md` in the same change as any
   architectural or design system shift.
 
@@ -205,20 +249,47 @@ npm run format     # prettier (src/**)
 
 - Do not "modernise" by reverting to a generic dark-mode + blue-accent +
   rounded-card portfolio.
-- Do not push display sizes above the documented caps (`display-1` ≤ `7rem`,
-  `display-2` ≤ `3.5rem`). Don't override their built-in line-height /
-  letter-spacing with extra classes.
-- Do not introduce new colours outside the defined palette
-  (`paper / ink / ink-soft / vermillion`).
+- Do not push display sizes above the documented caps. Don't override their
+  built-in line-height / letter-spacing with extra classes.
+- Do not introduce new colours outside `paper / ink / ink-soft / vermillion`.
 - Do not introduce new fonts without updating `DESIGN_NOTES.md`.
-- Do not reintroduce a custom cursor. The native system cursor is intentional.
-- Do not reintroduce a scroll-progress indicator at the top of the page.
+- Do not reintroduce a custom cursor or scroll-progress indicator.
 - Do not add a router, state library, or CSS-in-JS.
 - Do not bypass `cn()` / `tailwind-merge` for class composition.
-- Do not hard-code copy in components.
-- Do not add drop shadows, glass blur, or rounded corners > 0px on UI surfaces.
+- Do not hard-code project lists in components — they're fetched live.
+- Do not invent biographical facts. Source from the CV / cover letter PDFs
+  in the project root, or leave a `// TODO: confirm` marker.
+- Do not add drop shadows, glass blur, or rounded corners > 0px on UI
+  surfaces.
 
-## 10. Last Updated
+## 11. Internationalisation
 
-2026-05-10 — refinement pass (display caps reduced, scroll progress and
-custom cursor removed, contact cards unified through `ContactLink`).
+The site is bilingual (English + Norwegian). `src/lib/i18n.tsx` owns:
+
+- `LangProvider` — wraps `<App>`, carries `lang` and persists to
+  `localStorage` (`mb-lang`). Defaults to browser locale.
+- `useLang()` — returns `{ lang, setLang, toggle }`.
+- `useT()` — returns a `t()` function bound to current language. Pass it a
+  `string` or a `{ en, no }` object; it returns the right string.
+- `Loc = string | { en, no }` — the shape used for translatable fields in
+  `src/types/` and `src/data/`.
+
+Patterns:
+
+- **Static strings**: pass `Loc` to UI primitives (`SectionHeading`,
+  `TimelineItem`, `ContactLink`) — they call `useT()` internally.
+- **Prose with inline emphasis**: render conditionally on `useLang().lang`
+  in the section component (Hero, About).
+- **Data files** (`experience.ts`, `education.ts`, `socials.ts`): every
+  translatable field is `{ en, no }`. Untranslated fields (URLs, brand
+  names like "SSP", "echo") stay as plain strings.
+
+To add a new translatable string: extend the `Loc` field in the type or
+data, and wherever it's rendered, the existing `t()` calls handle it.
+
+## 12. Last Updated
+
+2026-05-10 — bilingual + portrait pass: EN/NO language switch via
+`src/lib/i18n.tsx`, portrait added at the top of the hero, marquee divider
+between hero and about replaced with a hairline rule, all internship
+references stripped from the page.

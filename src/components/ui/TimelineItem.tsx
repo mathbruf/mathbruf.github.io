@@ -2,6 +2,7 @@ import { motion } from 'framer-motion';
 import type { ExperienceItem } from '@/types';
 import { drift } from '@/lib/motion';
 import { cn } from '@/lib/cn';
+import { useT } from '@/lib/i18n';
 
 interface Props {
   item: ExperienceItem;
@@ -9,6 +10,7 @@ interface Props {
 }
 
 export function TimelineItem({ item, isLast }: Props) {
+  const t = useT();
   return (
     <motion.div
       variants={drift}
@@ -18,13 +20,11 @@ export function TimelineItem({ item, isLast }: Props) {
       )}
     >
       <div className="col-span-12 md:col-span-3 font-mono text-mono-sm text-ink/50 uppercase">
-        {item.period}
+        {t(item.period)}
       </div>
 
       <div className="col-span-12 md:col-span-5">
-        <h3 className="font-serif text-display-3 text-ink leading-[1.05]">
-          {item.title}
-        </h3>
+        <h3 className="font-serif text-display-3 text-ink">{t(item.title)}</h3>
         <p className="font-mono text-mono-sm text-vermillion mt-2 uppercase">
           {item.url ? (
             <a
@@ -33,18 +33,39 @@ export function TimelineItem({ item, isLast }: Props) {
               rel="noopener noreferrer"
               className="hover:text-ink transition-colors"
             >
-              {item.company} ↗
+              {t(item.company)} ↗
             </a>
           ) : (
-            item.company
+            t(item.company)
+          )}
+          {item.location && (
+            <span className="text-ink/50 normal-case">
+              {' '}
+              · {t(item.location)}
+            </span>
           )}
         </p>
       </div>
 
       <div className="col-span-12 md:col-span-4">
-        <p className="text-ink/70 leading-snug max-w-measure">
-          {item.description}
+        <p className="text-ink-soft leading-snug max-w-measure">
+          {t(item.description)}
         </p>
+        {item.bullets && item.bullets.length > 0 && (
+          <ul className="mt-3 space-y-1.5 max-w-measure">
+            {item.bullets.map((bullet, i) => (
+              <li
+                key={i}
+                className="flex gap-3 text-sm text-ink-soft leading-snug"
+              >
+                <span className="text-vermillion shrink-0" aria-hidden>
+                  —
+                </span>
+                <span>{t(bullet)}</span>
+              </li>
+            ))}
+          </ul>
+        )}
       </div>
     </motion.div>
   );

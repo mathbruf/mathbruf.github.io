@@ -5,9 +5,11 @@ import { Toast } from '@/components/ui/Toast';
 import { useCopyToClipboard } from '@/hooks/useCopyToClipboard';
 import { socials } from '@/data/socials';
 import { stagger } from '@/lib/motion';
+import { useT } from '@/lib/i18n';
 
 export function Contact() {
   const { copied, copy } = useCopyToClipboard();
+  const t = useT();
 
   return (
     <section
@@ -15,10 +17,9 @@ export function Contact() {
       className="px-6 md:px-12 lg:px-20 py-24 md:py-32 max-w-wide mx-auto scroll-mt-20"
     >
       <SectionHeading
-        index="04"
-        label="Reach out"
-        title="Get in touch."
-        caption="Open to internships, collaborations, and any conversation about building software well."
+        index="05"
+        label={{ en: 'Reach out', no: 'Ta kontakt' }}
+        title={{ en: 'Get in touch.', no: 'Ta kontakt.' }}
       />
 
       <motion.div
@@ -31,7 +32,7 @@ export function Contact() {
         {socials.map((s) =>
           s.copy ? (
             <ContactLink
-              key={s.label}
+              key={typeof s.label === 'string' ? s.label : s.label.en}
               label={s.label}
               secondary={s.secondary}
               icon={s.icon}
@@ -40,7 +41,7 @@ export function Contact() {
             />
           ) : (
             <ContactLink
-              key={s.label}
+              key={typeof s.label === 'string' ? s.label : s.label.en}
               label={s.label}
               secondary={s.secondary}
               icon={s.icon}
@@ -50,7 +51,10 @@ export function Contact() {
         )}
       </motion.div>
 
-      <Toast show={copied} message="EMAIL COPIED" />
+      <Toast
+        show={copied}
+        message={t({ en: 'EMAIL COPIED', no: 'E-POSTEN ER KOPIERT' })}
+      />
     </section>
   );
 }
